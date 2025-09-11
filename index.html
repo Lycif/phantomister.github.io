@@ -5,6 +5,33 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Phantomister Portfolio</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .gallery-item {
+      opacity: 0;
+      transform: scale(0) translate(0, 0);
+      animation: fly-in 1s forwards;
+    }
+    .gallery-item:nth-child(1) { animation-delay: 0.1s; }
+    .gallery-item:nth-child(2) { animation-delay: 0.2s; }
+    .gallery-item:nth-child(3) { animation-delay: 0.3s; }
+    .gallery-item:nth-child(4) { animation-delay: 0.4s; }
+    .gallery-item:nth-child(5) { animation-delay: 0.5s; }
+    .gallery-item:nth-child(6) { animation-delay: 0.6s; }
+    .gallery-item:nth-child(7) { animation-delay: 0.7s; }
+    .gallery-item:nth-child(8) { animation-delay: 0.8s; }
+    .gallery-item:nth-child(9) { animation-delay: 0.9s; }
+
+    @keyframes fly-in {
+      from {
+        opacity: 0;
+        transform: scale(0) translate(0, 0);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translate(0, 0);
+      }
+    }
+  </style>
 </head>
 <body class="bg-gray-900 text-white font-sans">
 
@@ -24,24 +51,21 @@
       </p>
     </section>
 
-    <!-- GALLERY (под твои скрины вставишь картинки) -->
-    <!-- GALLERY (твои реальные скрины) -->
-<!-- GALLERY (ровные картинки без подписей) -->
-<section class="mb-12">
-  <h2 class="text-3xl font-semibold mb-6 text-center">Projects</h2>
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-    <img src="photo_1_2025-09-11_12-40-23.jpg" alt="Project 1" class="rounded-2xl shadow-lg w-full h-56 object-cover">
-    <img src="photo_2_2025-09-11_12-40-23.jpg" alt="Project 2" class="rounded-2xl shadow-lg w-full h-56 object-cover">
-    <img src="photo_3_2025-09-11_12-40-23.jpg" alt="Project 3" class="rounded-2xl shadow-lg w-full h-56 object-cover">
-    <img src="photo_4_2025-09-11_12-40-23.jpg" alt="Project 4" class="rounded-2xl shadow-lg w-full h-56 object-cover">
-    <img src="photo_5_2025-09-11_12-40-23.jpg" alt="Project 5" class="rounded-2xl shadow-lg w-full h-56 object-cover">
-    <img src="photo_6_2025-09-11_12-40-23.jpg" alt="Project 6" class="rounded-2xl shadow-lg w-full h-56 object-cover">
-    <img src="photo_7_2025-09-11_12-40-23.jpg" alt="Project 7" class="rounded-2xl shadow-lg w-full h-56 object-cover">
-    <img src="photo_8_2025-09-11_12-40-23.jpg" alt="Project 8" class="rounded-2xl shadow-lg w-full h-56 object-cover">
-    <img src="photo_9_2025-09-11_12-40-23.jpg" alt="Project 9" class="rounded-2xl shadow-lg w-full h-56 object-cover">
-  </div>
-</section>
-
+    <!-- GALLERY -->
+    <section class="mb-12">
+      <h2 class="text-3xl font-semibold mb-6 text-center">Projects</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <img src="photo_1_2025-09-11_12-40-23.jpg" alt="Project 1" class="gallery-item rounded-2xl shadow-lg w-full h-56 object-cover">
+        <img src="photo_2_2025-09-11_12-40-23.jpg" alt="Project 2" class="gallery-item rounded-2xl shadow-lg w-full h-56 object-cover">
+        <img src="photo_3_2025-09-11_12-40-23.jpg" alt="Project 3" class="gallery-item rounded-2xl shadow-lg w-full h-56 object-cover">
+        <img src="photo_4_2025-09-11_12-40-23.jpg" alt="Project 4" class="gallery-item rounded-2xl shadow-lg w-full h-56 object-cover">
+        <img src="photo_5_2025-09-11_12-40-23.jpg" alt="Project 5" class="gallery-item rounded-2xl shadow-lg w-full h-56 object-cover">
+        <img src="photo_6_2025-09-11_12-40-23.jpg" alt="Project 6" class="gallery-item rounded-2xl shadow-lg w-full h-56 object-cover">
+        <img src="photo_7_2025-09-11_12-40-23.jpg" alt="Project 7" class="gallery-item rounded-2xl shadow-lg w-full h-56 object-cover">
+        <img src="photo_8_2025-09-11_12-40-23.jpg" alt="Project 8" class="gallery-item rounded-2xl shadow-lg w-full h-56 object-cover">
+        <img src="photo_9_2025-09-11_12-40-23.jpg" alt="Project 9" class="gallery-item rounded-2xl shadow-lg w-full h-56 object-cover">
+      </div>
+    </section>
 
     <!-- VOICE ASSISTANT -->
     <section class="mb-12 text-center">
