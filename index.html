@@ -15,12 +15,14 @@
       height: 50%;
       z-index: 9999;
       overflow: hidden;
+      pointer-events: none;
+      background: transparent; /* убрали чёрный фон */
     }
     .door canvas {
       width: 100%;
       height: 100%;
       display: block;
-      background: black;
+      background: transparent; /* прозрачный фон */
     }
     .door.top { top: 0; }
     .door.bottom { bottom: 0; }
@@ -41,23 +43,11 @@
       <h1 class="text-5xl font-bold">Phantomister</h1>
       <p class="text-lg mt-3 text-gray-300">Building Intelligent Automation Systems & AI Assistants</p>
     </header>
-    <main class="p-6 max-w-6xl mx-auto">
-      <section class="mb-12 text-center">
-        <h2 class="text-3xl font-semibold mb-4">About Me</h2>
-        <p class="text-gray-300 leading-relaxed">
-          Hi, I’m Phantomister — a system administrator and automation developer from Kyiv.<br>
-          I design and build intelligent automation systems, AI-powered assistants, and advanced workflows that connect people, businesses, and technology.
-        </p>
-      </section>
-    </main>
-    <footer class="text-center text-gray-500 p-6 border-t border-gray-700">
-      © 2025 Phantomister. All rights reserved.
-    </footer>
   </div>
 
   <!-- Скрипт для Matrix Rain -->
   <script>
-    function matrixRain(canvasId) {
+    function matrixRain(canvasId, reverse = false) {
       const canvas = document.getElementById(canvasId);
       const ctx = canvas.getContext("2d");
 
@@ -67,18 +57,24 @@
       const letters = "01ABCDEFGHIJKLMNOPQRSTUVWXYZ#$%&@";
       const fontSize = 14;
       const columns = canvas.width / fontSize;
-      const drops = Array(Math.floor(columns)).fill(1);
+      const drops = Array(Math.floor(columns)).fill(canvas.height / fontSize / 2);
 
       function draw() {
-        ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         ctx.fillStyle = "#0F0";
         ctx.font = fontSize + "px monospace";
 
         for (let i = 0; i < drops.length; i++) {
           const text = letters.charAt(Math.floor(Math.random() * letters.length));
-          ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+          if (reverse) {
+            // снизу вверх
+            ctx.fillText(text, i * fontSize, canvas.height - drops[i] * fontSize);
+          } else {
+            // сверху вниз
+            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+          }
 
           if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
             drops[i] = 0;
@@ -90,9 +86,10 @@
       setInterval(draw, 33);
     }
 
-    // Запуск анимации на обеих дверях
-    matrixRain("matrixTop");
-    matrixRain("matrixBottom");
+    // Верх идёт вниз
+    matrixRain("matrixTop", false);
+    // Низ идёт вверх
+    matrixRain("matrixBottom", true);
 
     // Анимация дверей
     window.addEventListener("load", () => {
