@@ -9,31 +9,27 @@
   <style>
     body { margin: 0; overflow: hidden; background: #0a0a0a; }
 
-    /* оверлей для эффекта */
+    /* Оверлей */
     .overlay {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      inset: 0;
       z-index: 9999;
       overflow: hidden;
+      display: flex;
+      flex-direction: column;
     }
 
     .door {
-      position: absolute;
-      width: 100%;
-      height: 50%;
-      background: transparent;
+      flex: 1;
       overflow: hidden;
     }
-    .door.top { top: 0; }
-    .door.bottom { bottom: 0; }
 
     canvas {
       width: 100%;
-      height: 100%;
+      height: 200%; /* больше, чтобы перекрыть всё */
       display: block;
+      position: relative;
+      top: -50%; /* центрировать */
     }
 
     .content { opacity: 0; }
@@ -41,13 +37,13 @@
 </head>
 <body class="bg-gray-900 text-white font-sans">
 
-  <!-- ЭФФЕКТ ОТКРЫТИЯ -->
+  <!-- ЭФФЕКТ -->
   <div class="overlay">
-    <div class="door top"><canvas id="matrixTop"></canvas></div>
-    <div class="door bottom"><canvas id="matrixBottom"></canvas></div>
+    <div class="door top"><canvas id="matrix"></canvas></div>
+    <div class="door bottom"><canvas id="matrix"></canvas></div>
   </div>
 
-  <!-- КОНТЕНТ САЙТА -->
+  <!-- КОНТЕНТ -->
   <div class="content">
     <header class="text-center p-8">
       <h1 class="text-5xl font-bold">Phantomister</h1>
@@ -56,12 +52,10 @@
   </div>
 
   <script>
-    function matrixRain(canvasId) {
-      const canvas = document.getElementById(canvasId);
+    function matrixRain(canvas) {
       const ctx = canvas.getContext("2d");
-
       canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight / 2;
+      canvas.height = window.innerHeight;
 
       const letters = "01ABCDEFGHIJKLMNOPQRSTUVWXYZ#$%&@";
       const fontSize = 16;
@@ -89,11 +83,10 @@
       setInterval(draw, 33);
     }
 
-    // Матрица сразу по всему экрану
-    matrixRain("matrixTop");
-    matrixRain("matrixBottom");
+    const canvases = document.querySelectorAll("#matrix");
+    canvases.forEach(c => matrixRain(c));
 
-    // Эффект дверей из середины
+    // анимация разъезда
     window.addEventListener("load", () => {
       gsap.to(".door.top", { y: "-100%", duration: 1.5, ease: "power3.inOut" });
       gsap.to(".door.bottom", { y: "100%", duration: 1.5, ease: "power3.inOut" });
