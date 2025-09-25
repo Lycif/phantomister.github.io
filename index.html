@@ -7,34 +7,33 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <style>
-    body {
-      background: #000;
-      margin: 0;
-      font-family: sans-serif;
+    /* Двери */
+    .door {
+      position: fixed;
+      left: 0;
+      width: 100%;
+      height: 50%;
+      z-index: 9999;
       overflow: hidden;
     }
-
-    /* Шум (помехи) */
-    #noise {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: #000;
-      z-index: 9999;
-      pointer-events: none;
+    .door canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      background: black;
     }
+    .door.top { top: 0; }
+    .door.bottom { bottom: 0; }
 
     /* Контент */
-    .content {
-      opacity: 0;
-      transition: opacity 1s ease;
-    }
+    .content { opacity: 0; }
   </style>
 </head>
 <body class="bg-gray-900 text-white font-sans">
 
-  <!-- Эффект шума -->
-  <canvas id="noise"></canvas>
+  <!-- Двери с canvas -->
+  <div class="door top"><canvas id="matrixTop"></canvas></div>
+  <div class="door bottom"><canvas id="matrixBottom"></canvas></div>
 
   <!-- Контент -->
   <div class="content">
@@ -42,51 +41,64 @@
       <h1 class="text-5xl font-bold">Phantomister</h1>
       <p class="text-lg mt-3 text-gray-300">Building Intelligent Automation Systems & AI Assistants</p>
     </header>
+    <main class="p-6 max-w-6xl mx-auto">
+      <section class="mb-12 text-center">
+        <h2 class="text-3xl font-semibold mb-4">About Me</h2>
+        <p class="text-gray-300 leading-relaxed">
+          Hi, I’m Phantomister — a system administrator and automation developer from Kyiv.<br>
+          I design and build intelligent automation systems, AI-powered assistants, and advanced workflows that connect people, businesses, and technology.
+        </p>
+      </section>
+    </main>
+    <footer class="text-center text-gray-500 p-6 border-t border-gray-700">
+      © 2025 Phantomister. All rights reserved.
+    </footer>
   </div>
 
+  <!-- Скрипт для Matrix Rain -->
   <script>
-    // === ШУМ (СТАТИКА) ===
-    const canvas = document.getElementById("noise");
-    const ctx = canvas.getContext("2d");
-    let w, h;
+    function matrixRain(canvasId) {
+      const canvas = document.getElementById(canvasId);
+      const ctx = canvas.getContext("2d");
 
-    function resize() {
-      w = canvas.width = window.innerWidth;
-      h = canvas.height = window.innerHeight;
-    }
-    window.addEventListener("resize", resize);
-    resize();
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight / 2;
 
-    function noise() {
-      const imageData = ctx.createImageData(w, h);
-      const buffer32 = new Uint32Array(imageData.data.buffer);
-      const len = buffer32.length;
-      for (let i = 0; i < len; i++) {
-        if (Math.random() < 0.5) {
-          buffer32[i] = 0xffffffff;
+      const letters = "01ABCDEFGHIJKLMNOPQRSTUVWXYZ#$%&@";
+      const fontSize = 14;
+      const columns = canvas.width / fontSize;
+      const drops = Array(Math.floor(columns)).fill(1);
+
+      function draw() {
+        ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.fillStyle = "#0F0";
+        ctx.font = fontSize + "px monospace";
+
+        for (let i = 0; i < drops.length; i++) {
+          const text = letters.charAt(Math.floor(Math.random() * letters.length));
+          ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+          if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+            drops[i] = 0;
+          }
+          drops[i]++;
         }
       }
-      ctx.putImageData(imageData, 0, 0);
+
+      setInterval(draw, 33);
     }
 
-    let animation;
-    function loop() {
-      noise();
-      animation = requestAnimationFrame(loop);
-    }
-    loop();
+    // Запуск анимации на обеих дверях
+    matrixRain("matrixTop");
+    matrixRain("matrixBottom");
 
-    // === ЭФФЕКТ СТАРОГО ТЕЛЕКА ===
+    // Анимация дверей
     window.addEventListener("load", () => {
-      const tl = gsap.timeline();
-
-      // Имитация "схлопывания" в линию
-      tl.to("#noise", { scaleY: 0.05, duration: 0.4, ease: "power2.inOut" })
-        .to("#noise", { scaleX: 0, duration: 0.3, ease: "power2.in" })
-        .to("#noise", { opacity: 0, duration: 0.3, delay: 0.1, onComplete: () => {
-          cancelAnimationFrame(animation);
-          document.querySelector(".content").style.opacity = 1;
-        }});
+      gsap.to(".top", { y: "-100%", duration: 1.5, ease: "power3.inOut" });
+      gsap.to(".bottom", { y: "100%", duration: 1.5, ease: "power3.inOut" });
+      gsap.to(".content", { opacity: 1, delay: 1.2, duration: 1 });
     });
   </script>
 </body>
