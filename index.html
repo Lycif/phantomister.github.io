@@ -7,70 +7,87 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <style>
-    body { margin: 0; overflow: hidden; background: #0a0a0a; }
-
-    /* Оверлей */
+    /* Контейнер-затемнение */
     .overlay {
       position: fixed;
-      inset: 0;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       z-index: 9999;
-      overflow: hidden;
       display: flex;
       flex-direction: column;
     }
-
     .door {
       flex: 1;
+      background: #000;
       overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
-
     canvas {
       width: 100%;
-      height: 200%; /* больше, чтобы перекрыть всё */
+      height: 100%;
       display: block;
-      position: relative;
-      top: -50%; /* центрировать */
     }
-
-    .content { opacity: 0; }
+    .content {
+      opacity: 0;
+    }
   </style>
 </head>
 <body class="bg-gray-900 text-white font-sans">
 
-  <!-- ЭФФЕКТ -->
+  <!-- Кодовые двери -->
   <div class="overlay">
-    <div class="door top"><canvas id="matrix"></canvas></div>
-    <div class="door bottom"><canvas id="matrix"></canvas></div>
+    <div class="door top"><canvas id="matrixTop"></canvas></div>
+    <div class="door bottom"><canvas id="matrixBottom"></canvas></div>
   </div>
 
-  <!-- КОНТЕНТ -->
+  <!-- Сайт -->
   <div class="content">
     <header class="text-center p-8">
       <h1 class="text-5xl font-bold">Phantomister</h1>
       <p class="text-lg mt-3 text-gray-300">Building Intelligent Automation Systems & AI Assistants</p>
     </header>
+
+    <main class="p-6 max-w-6xl mx-auto">
+      <section class="mb-12 text-center">
+        <h2 class="text-3xl font-semibold mb-4">About Me</h2>
+        <p class="text-gray-300 leading-relaxed">
+          Hi, I’m Phantomister — a system administrator and automation developer from Kyiv.<br>
+          I design and build intelligent automation systems, AI-powered assistants, and advanced workflows.
+        </p>
+      </section>
+    </main>
+
+    <footer class="text-center text-gray-500 p-6 border-t border-gray-700">
+      © 2025 Phantomister. All rights reserved.
+    </footer>
   </div>
 
   <script>
-    function matrixRain(canvas) {
+    // Матрица кода
+    function startMatrix(canvasId) {
+      const canvas = document.getElementById(canvasId);
       const ctx = canvas.getContext("2d");
       canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      canvas.height = window.innerHeight / 2;
 
-      const letters = "01ABCDEFGHIJKLMNOPQRSTUVWXYZ#$%&@";
-      const fontSize = 16;
+      const letters = "01ABCDEFG#@$%&*".split("");
+      const fontSize = 14;
       const columns = canvas.width / fontSize;
       const drops = Array(Math.floor(columns)).fill(1);
 
       function draw() {
-        ctx.fillStyle = "rgba(0,0,0,0.15)";
+        ctx.fillStyle = "rgba(0,0,0,0.05)";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+        ctx.fillStyle = `hsl(${Math.random() * 360},100%,50%)`;
         ctx.font = fontSize + "px monospace";
 
         for (let i = 0; i < drops.length; i++) {
-          const text = letters.charAt(Math.floor(Math.random() * letters.length));
-          ctx.fillStyle = `hsl(${Math.random() * 360}, 100%, 50%)`;
+          const text = letters[Math.floor(Math.random() * letters.length)];
           ctx.fillText(text, i * fontSize, drops[i] * fontSize);
 
           if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
@@ -79,17 +96,16 @@
           drops[i]++;
         }
       }
-
-      setInterval(draw, 33);
+      setInterval(draw, 50);
     }
 
-    const canvases = document.querySelectorAll("#matrix");
-    canvases.forEach(c => matrixRain(c));
+    startMatrix("matrixTop");
+    startMatrix("matrixBottom");
 
-    // анимация разъезда
+    // Анимация дверей
     window.addEventListener("load", () => {
-      gsap.to(".door.top", { y: "-100%", duration: 1.5, ease: "power3.inOut" });
-      gsap.to(".door.bottom", { y: "100%", duration: 1.5, ease: "power3.inOut" });
+      gsap.to(".top", { y: "-100%", duration: 1.5, ease: "power3.inOut" });
+      gsap.to(".bottom", { y: "100%", duration: 1.5, ease: "power3.inOut" });
       gsap.to(".overlay", { opacity: 0, delay: 1.6, duration: 0.5, onComplete: () => {
         document.querySelector(".overlay").style.display = "none";
       }});
