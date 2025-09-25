@@ -7,6 +7,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <style>
+    body { margin: 0; overflow: hidden; }
     /* Двери */
     .door {
       position: fixed;
@@ -23,14 +24,14 @@
       display: block;
       background: transparent;
     }
-    .door.top { top: 0; }
-    .door.bottom { bottom: 0; }
+    .door.top { top: 50%; transform: translateY(-100%); }
+    .door.bottom { top: 50%; }
     .content { opacity: 0; }
   </style>
 </head>
 <body class="bg-gray-900 text-white font-sans">
 
-  <!-- Двери (полный экран код) -->
+  <!-- Двери (код заполняет весь экран) -->
   <div class="door top"><canvas id="matrixTop"></canvas></div>
   <div class="door bottom"><canvas id="matrixBottom"></canvas></div>
 
@@ -57,7 +58,7 @@
       const drops = Array(Math.floor(columns)).fill(1);
 
       function draw() {
-        ctx.fillStyle = "rgba(0,0,0,0.1)";
+        ctx.fillStyle = "rgba(0,0,0,0.15)";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         ctx.font = fontSize + "px monospace";
@@ -65,7 +66,7 @@
         for (let i = 0; i < drops.length; i++) {
           const text = letters.charAt(Math.floor(Math.random() * letters.length));
 
-          // 🎨 Случайный цвет для каждой буквы
+          // 🎨 Случайный цвет
           ctx.fillStyle = `hsl(${Math.random() * 360}, 100%, 50%)`;
 
           ctx.fillText(text, i * fontSize, drops[i] * fontSize);
@@ -80,14 +81,14 @@
       setInterval(draw, 33);
     }
 
-    // Запуск матрицы
+    // Запускаем матрицу
     matrixRain("matrixTop");
     matrixRain("matrixBottom");
 
-    // Анимация дверей
+    // Эффект дверей из середины
     window.addEventListener("load", () => {
-      gsap.to(".top", { y: "-100%", duration: 1.5, ease: "power3.inOut" });
-      gsap.to(".bottom", { y: "100%", duration: 1.5, ease: "power3.inOut" });
+      gsap.to(".door.top", { y: "-100%", duration: 1.5, ease: "power3.inOut" });
+      gsap.to(".door.bottom", { y: "100%", duration: 1.5, ease: "power3.inOut" });
       gsap.to(".content", { opacity: 1, delay: 1.2, duration: 1 });
     });
   </script>
