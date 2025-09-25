@@ -7,119 +7,86 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <style>
-    /* Двери */
-    .door {
+    body {
+      background: #000;
+      margin: 0;
+      font-family: sans-serif;
+      overflow: hidden;
+    }
+
+    /* Шум (помехи) */
+    #noise {
       position: fixed;
-      left: 0;
-      width: 100%;
-      height: 50%;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
       background: #000;
       z-index: 9999;
+      pointer-events: none;
     }
-    .door.top { top: 0; }
-    .door.bottom { bottom: 0; }
-    .content { opacity: 0; }
+
+    /* Контент */
+    .content {
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
   </style>
 </head>
 <body class="bg-gray-900 text-white font-sans">
 
-  <!-- Двери -->
-  <div class="door top"></div>
-  <div class="door bottom"></div>
+  <!-- Эффект шума -->
+  <canvas id="noise"></canvas>
 
-  <!-- ВСЁ СОДЕРЖИМОЕ -->
+  <!-- Контент -->
   <div class="content">
-    <!-- HEADER -->
     <header class="text-center p-8">
       <h1 class="text-5xl font-bold">Phantomister</h1>
       <p class="text-lg mt-3 text-gray-300">Building Intelligent Automation Systems & AI Assistants</p>
     </header>
-
-    <!-- ABOUT -->
-    <main class="p-6 max-w-6xl mx-auto">
-      <section class="mb-12 text-center">
-        <h2 class="text-3xl font-semibold mb-4">About Me</h2>
-        <p class="text-gray-300 leading-relaxed">
-          Hi, I’m Phantomister — a system administrator and automation developer from Kyiv.<br>
-          I design and build intelligent automation systems, AI-powered assistants, and advanced workflows that connect people, businesses, and technology.
-        </p>
-      </section>
-
-      <!-- GALLERY -->
-      <section class="mb-12">
-        <h2 class="text-3xl font-semibold mb-6 text-center">Projects</h2>
-        <div id="gallery" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 relative">
-          <img src="photo_1_2025-09-11_12-40-23.jpg" class="gallery-item rounded-2xl shadow-lg w-full h-56 object-cover">
-          <img src="photo_2_2025-09-11_12-40-23.jpg" class="gallery-item rounded-2xl shadow-lg w-full h-56 object-cover">
-          <img src="photo_3_2025-09-11_12-40-23.jpg" class="gallery-item rounded-2xl shadow-lg w-full h-56 object-cover">
-          <img src="photo_4_2025-09-11_12-40-23.jpg" class="gallery-item rounded-2xl shadow-lg w-full h-56 object-cover">
-          <img src="photo_5_2025-09-11_12-40-23.jpg" class="gallery-item rounded-2xl shadow-lg w-full h-56 object-cover">
-          <img src="photo_6_2025-09-11_12-40-23.jpg" class="gallery-item rounded-2xl shadow-lg w-full h-56 object-cover">
-          <img src="photo_7_2025-09-11_12-40-23.jpg" class="gallery-item rounded-2xl shadow-lg w-full h-56 object-cover">
-          <img src="photo_8_2025-09-11_12-40-23.jpg" class="gallery-item rounded-2xl shadow-lg w-full h-56 object-cover">
-          <img src="photo_9_2025-09-11_12-40-23.jpg" class="gallery-item rounded-2xl shadow-lg w-full h-56 object-cover">
-        </div>
-      </section>
-
-      <!-- VOICE ASSISTANT -->
-      <section class="mb-12 text-center">
-        <h2 class="text-3xl font-semibold mb-4">Interactive Assistant</h2>
-        <p class="text-gray-300 mb-4">
-          If you want to know more information, use my chat or voice assistant below:
-        </p>
-        <div class="flex justify-center">
-          <elevenlabs-convai agent-id="agent_8501k4ss0t5degctdt09p8wh4qcn"></elevenlabs-convai>
-        </div>
-        <script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>
-      </section>
-
-      <!-- CONTACTS -->
-      <section class="mb-12 text-center">
-        <h2 class="text-3xl font-semibold mb-4">Contact Me</h2>
-        <div class="flex justify-center gap-6">
-          <a href="https://t.me/alex_zablo" target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-xl shadow-md">
-            Telegram
-          </a>
-          <a href="mailto:zablotskiyalex001@gmail.com" class="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-3 rounded-xl shadow-md">
-            Email
-          </a>
-        </div>
-      </section>
-    </main>
-
-    <!-- FOOTER -->
-    <footer class="text-center text-gray-500 p-6 border-t border-gray-700">
-      © 2025 Phantomister. All rights reserved.
-    </footer>
   </div>
 
-  <!-- GSAP ANIMATION -->
   <script>
+    // === ШУМ (СТАТИКА) ===
+    const canvas = document.getElementById("noise");
+    const ctx = canvas.getContext("2d");
+    let w, h;
+
+    function resize() {
+      w = canvas.width = window.innerWidth;
+      h = canvas.height = window.innerHeight;
+    }
+    window.addEventListener("resize", resize);
+    resize();
+
+    function noise() {
+      const imageData = ctx.createImageData(w, h);
+      const buffer32 = new Uint32Array(imageData.data.buffer);
+      const len = buffer32.length;
+      for (let i = 0; i < len; i++) {
+        if (Math.random() < 0.5) {
+          buffer32[i] = 0xffffffff;
+        }
+      }
+      ctx.putImageData(imageData, 0, 0);
+    }
+
+    let animation;
+    function loop() {
+      noise();
+      animation = requestAnimationFrame(loop);
+    }
+    loop();
+
+    // === ЭФФЕКТ СТАРОГО ТЕЛЕКА ===
     window.addEventListener("load", () => {
-      // анимация дверей сверху и снизу
-      gsap.to(".top", { y: "-100%", duration: 1.5, ease: "power3.inOut" });
-      gsap.to(".bottom", { y: "100%", duration: 1.5, ease: "power3.inOut" });
-      gsap.to(".content", { opacity: 1, delay: 1.2, duration: 1 });
+      const tl = gsap.timeline();
 
-      // анимация галереи
-      const items = document.querySelectorAll(".gallery-item");
-      const centerX = window.innerWidth / 2;
-      const centerY = window.innerHeight / 2;
-
-      items.forEach((item, i) => {
-        const rect = item.getBoundingClientRect();
-        const dx = centerX - (rect.left + rect.width / 2);
-        const dy = centerY - (rect.top + rect.height / 2);
-
-        gsap.from(item, {
-          x: dx,
-          y: dy,
-          opacity: 0,
-          duration: 1,
-          delay: 1.5 + i * 0.15,
-          ease: "power3.out"
-        });
-      });
+      // Имитация "схлопывания" в линию
+      tl.to("#noise", { scaleY: 0.05, duration: 0.4, ease: "power2.inOut" })
+        .to("#noise", { scaleX: 0, duration: 0.3, ease: "power2.in" })
+        .to("#noise", { opacity: 0, duration: 0.3, delay: 0.1, onComplete: () => {
+          cancelAnimationFrame(animation);
+          document.querySelector(".content").style.opacity = 1;
+        }});
     });
   </script>
 </body>
